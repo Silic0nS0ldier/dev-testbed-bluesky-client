@@ -1,0 +1,15 @@
+{
+    "name": "vendor",
+    "type": "module",
+    "exports": {
+        "./preact": "./dist/preact.js",
+        "./preact/hooks": "./dist/preact/hooks.js",
+        "./@atproto/api": "./dist/@atproto/api.js",
+        "./neverthrow": "./dist/neverthrow.js"
+    },
+    "dependencies": {
+        "@atproto/api": "^0.13.11",
+        "preact": "^10.24.2",
+        "neverthrow": "^8.0.0"
+    }
+}

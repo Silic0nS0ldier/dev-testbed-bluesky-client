@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "Preserve",
+        "moduleResolution": "Bundler",
+        "rootDir": "./src",
+        "outDir": "./public",
+        "strict": true,
+        "jsx": "react",
+        "jsxFactory": "h",
+        "jsxFragmentFactory": "Fragment",
+        // Ignore errors in third party types (e.g. atproto)
+        "skipLibCheck": true,
+        "noUncheckedIndexedAccess": true
+    },
+    "include": ["./src/**/*.ts", "src/**/*.tsx"]
+}

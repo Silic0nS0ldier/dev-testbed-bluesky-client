@@ -1,0 +1,8 @@
+packages:
+  - build_tools
+  - web_app
+  - vendor
+  - build_defs/rollup_bundle
+catalog:
+  "@types/node": ^20.14.11
+  typescript: ^5.5.4

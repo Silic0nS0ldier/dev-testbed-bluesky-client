@@ -1,0 +1,10 @@
+{
+    "private": true,
+    "dependencies": {
+        "@types/node": "catalog:",
+        "typescript": "catalog:"
+    },
+    "pnpm": {
+        "onlyBuiltDependencies": []
+    }
+}
