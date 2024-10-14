@@ -78,15 +78,21 @@ const bundle = await (async () => {
 try {
     await bundle.write({
         dir: outDir,
-        // TODO Formalise this in the CLI API
         entryFileNames: (chunkInfo) => {
             let outName = chunkInfo.facadeModuleId;
             if (!outName) {
                 throw new Error('Every entrypoint must have a fadadeModuleId');
             }
-            // Remove path to module
-            outName = outName.replace(process.cwd() + "/dist/", "");
-            return outName;
+
+            if (outName.startsWith(process.cwd())) {
+                // Remove path to module
+                // TODO Infer this properly from inputs
+                outName = outName.replace(process.cwd() + "/dist/", "");
+                outName = outName.replace(process.cwd() + "/public/", "");
+                return outName;
+            }
+
+            return "chunks/[name].[hash].js";
         },
         format: "module",
         generatedCode: "es2015",

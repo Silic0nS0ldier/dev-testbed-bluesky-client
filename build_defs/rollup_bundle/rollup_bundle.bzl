@@ -23,8 +23,8 @@ def rollup_bundle(name, srcs, entry_points, external_modules, visibility):
     for entry_point in entry_points:
         args.append("--entry-point")
         args.append(entry_point)
-        # TODO This is hacky
-        outs.append("%s/%s" % (name, entry_point.replace("dist/", "")))
+        # TODO This is hacky, should infer from inputs
+        outs.append("%s/%s" % (name, entry_point.replace("dist/", "").replace("public/", "")))
     
     # Handle external modules
     for external_module in external_modules:

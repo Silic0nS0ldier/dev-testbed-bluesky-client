@@ -1,6 +1,7 @@
 load("@aspect_rules_js//js:defs.bzl", "js_run_devserver")
 load("@npm//build_tools:@web/dev-server/package_json.bzl", web_dev_server_bin = "bin")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("//build_defs/rollup_bundle:rollup_bundle.bzl", "rollup_bundle")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 
 npm_link_all_packages(name = "node_modules")
@@ -9,6 +10,7 @@ ts_project(
     name = "ts",
     tsconfig = ":tsconfig.json",
     srcs = glob(["src/**/*.ts", "src/**/*.tsx"]),
+    # TODO write to dist instead, outputs can then be copied for devserver (bundle will just read from dist)
     out_dir = "public",
     deps = [
         ":node_modules/vendor",
@@ -35,3 +37,15 @@ js_run_devserver(
     ],
     tool = ":wds",
 )
+
+rollup_bundle(
+    name = "bundle",
+    srcs = [":ts"],
+    entry_points = [
+        "public/main.js",
+    ],
+    external_modules = [],
+    visibility = [],
+)
+
+# TODO add target which created distributable public dir
