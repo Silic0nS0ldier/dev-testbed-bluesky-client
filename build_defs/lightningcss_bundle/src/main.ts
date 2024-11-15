@@ -41,11 +41,30 @@ const outDir = (() => {
     }
 })();
 
+const urlLookupPaths = new Set<string>();
 const { code } = bundle({
     filename: entryPoint,
     visitor: {
+        StyleSheet(stylesheet) {
+            stylesheet.sources.map(s => urlLookupPaths.add(path.normalize(path.dirname(s))));
+        },
         Url(url) {
-            // adjust external references for the new script
+            // Adjust external references for the bundled script
+            // By the time this runs, the CSS is already bundled so we have to check all relative sources
+            const [base, ...extras] = Array.from(urlLookupPaths)   
+                .filter(p => fs.existsSync(path.join(process.cwd(), p, url.url)));
+            if (base == null) {
+                throw new Error("No base url resolved");
+            }
+            if (extras.length > 0) {
+                throw new Error(`Multiple base urls resolved: ${JSON.stringify([base, ...extras])}`);
+            }
+
+            return {
+                ...url,
+                // TODO Eliminate arbitrary `.replace`
+                url: "./" + path.join(base.replace("src/", ""), url.url),
+            };
         },
     }
 });

@@ -88,7 +88,11 @@ rollup_bundle(
 
 lightningcss_bundle(
     name = "css_bundle",
-    srcs = glob(["src/**/*.css"]),
+    srcs = glob([
+        "src/**/*.css",
+        # Files referenced by 'url()', needed to validate resolution
+        "src/fonts/**/*ttf",
+    ]),
     entry_point = "src/main.css",
     visibility = [],
 )
@@ -111,4 +115,19 @@ copy_to_directory(
         # :everything else
         "src/": "",
     },
+)
+
+# Like `:devserver` but running on the final outputs
+js_run_devserver(
+    name = "distserver",
+    args = [
+        "--watch",
+        "--open",
+        "--root-dir", "./web_app/dist",
+        "--node-resolve",
+    ],
+    data = [
+        ":dist",
+    ],
+    tool = ":wds",
 )
