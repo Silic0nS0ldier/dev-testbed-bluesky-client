@@ -2,50 +2,106 @@ load("@aspect_rules_js//js:defs.bzl", "js_run_devserver")
 load("@npm//build_tools:@web/dev-server/package_json.bzl", web_dev_server_bin = "bin")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("//build_defs/rollup_bundle:rollup_bundle.bzl", "rollup_bundle")
+load("//build_defs/lightningcss_bundle:lightningcss_bundle.bzl", "lightningcss_bundle")
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 
 npm_link_all_packages(name = "node_modules")
 
+# NOTE This app has a largely unified build process, with the dev server consuming compiled (but
+# unbundled) sources.
+
 ts_project(
-    name = "ts",
+    name = "js",
     tsconfig = ":tsconfig.json",
     srcs = glob(["src/**/*.ts", "src/**/*.tsx"]),
-    # TODO write to dist instead, outputs can then be copied for devserver (bundle will just read from dist)
-    out_dir = "public",
+    out_dir = "src",
     deps = [
         ":node_modules/vendor",
     ],
     root_dir = "src",
 )
 
+filegroup(
+    name = "css",
+    srcs = glob(["src/**/*.css"]),
+)
+
+filegroup(
+    name = "favicons",
+    srcs = glob([
+        "src/android-chrome-*",
+        "src/apple-touch-*",
+        "src/favicon*",
+    ]),
+)
+
+filegroup(
+    name = "manifest",
+    srcs = ["src/site.webmanifest"],
+)
+
+filegroup(
+    name = "index",
+    srcs = ["src/index.html"],
+)
+
 web_dev_server_bin.wds_binary(
     name = "wds",
 )
 
-# This can be run via `.ibazel run //web_app:devserver` for automatic reloads when source changes.
+# This can be run via `ibazel run //web_app:devserver` for automatic reloads when source changes.
 # Otherwise `bazel run //web_app:devserver` will provide a one-off run of the devserver.
 js_run_devserver(
     name = "devserver",
     args = [
         "--watch",
         "--open",
-        "--root-dir", "./web_app/public",
+        "--root-dir", "./web_app/src",
         "--node-resolve",
     ],
-    data = glob(["public/**"], exclude = ["public/about.txt"]) + [
-        ":ts",
+    data = [
+        ":js",
+        ":css",
+        ":favicons",
+        ":manifest",
+        ":index"
     ],
     tool = ":wds",
 )
 
 rollup_bundle(
-    name = "bundle",
-    srcs = [":ts"],
+    name = "js_bundle",
+    srcs = [":js"],
     entry_points = [
-        "public/main.js",
+        "src/main.js",
     ],
     external_modules = [],
     visibility = [],
 )
 
-# TODO add target which created distributable public dir
+lightningcss_bundle(
+    name = "css_bundle",
+    srcs = glob(["src/**/*.css"]),
+    entry_point = "src/main.css",
+    visibility = [],
+)
+
+copy_to_directory(
+    name = "dist",
+    srcs = [
+        ":js_bundle",
+        ":css_bundle",
+        ":favicons",
+        ":manifest",
+        ":index"
+    ],
+    replace_prefixes = {
+        # :js_bundle
+        "js_bundle/": "",
+        # :css_bundle
+        "css_bundle/": "",
+        # :everything else
+        "src/": "",
+    },
+)

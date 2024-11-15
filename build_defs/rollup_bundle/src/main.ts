@@ -87,8 +87,9 @@ try {
             if (outName.startsWith(process.cwd())) {
                 // Remove path to module
                 // TODO Infer this properly from inputs
+                // "src/" for web_app, "dist/" for vendor
                 outName = outName.replace(process.cwd() + "/dist/", "");
-                outName = outName.replace(process.cwd() + "/public/", "");
+                outName = outName.replace(process.cwd() + "/src/", "");
                 return outName;
             }
 

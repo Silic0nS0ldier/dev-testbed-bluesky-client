@@ -4,7 +4,7 @@
         "module": "Preserve",
         "moduleResolution": "Bundler",
         "rootDir": "./src",
-        "outDir": "./public",
+        "outDir": "./src",
         "strict": true,
         "jsx": "react",
         "jsxFactory": "h",
@@ -13,5 +13,6 @@
         "skipLibCheck": true,
         "noUncheckedIndexedAccess": true
     },
-    "include": ["./src/**/*.ts", "src/**/*.tsx"]
+    "include": ["./src/**/*.ts", "src/**/*.tsx"],
+    "exclude": []
 }

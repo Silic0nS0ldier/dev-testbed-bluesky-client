@@ -24,7 +24,8 @@ def rollup_bundle(name, srcs, entry_points, external_modules, visibility):
         args.append("--entry-point")
         args.append(entry_point)
         # TODO This is hacky, should infer from inputs
-        outs.append("%s/%s" % (name, entry_point.replace("dist/", "").replace("public/", "")))
+        # "src/" for web_app, "dist/" for vendor
+        outs.append("%s/%s" % (name, entry_point.replace("src/", "").replace("dist/", "")))
     
     # Handle external modules
     for external_module in external_modules:

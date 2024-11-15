@@ -3,8 +3,9 @@
 # pnpm-store
 
 # node_modules
-node_modules
-build_tools/node_modules
+build_defs/lightningcss_bundle/node_modules
 build_defs/rollup_bundle/node_modules
+build_tools/node_modules
+node_modules
 vendor/node_modules
 web_app/node_modules
