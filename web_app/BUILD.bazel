@@ -28,6 +28,11 @@ filegroup(
 )
 
 filegroup(
+    name = "fonts",
+    srcs = glob(["src/fonts/**/*.ttf"]),
+)
+
+filegroup(
     name = "favicons",
     srcs = glob([
         "src/android-chrome-*",
@@ -63,6 +68,7 @@ js_run_devserver(
     data = [
         ":js",
         ":css",
+        ":fonts",
         ":favicons",
         ":manifest",
         ":index"
@@ -92,6 +98,7 @@ copy_to_directory(
     srcs = [
         ":js_bundle",
         ":css_bundle",
+        ":fonts",
         ":favicons",
         ":manifest",
         ":index"

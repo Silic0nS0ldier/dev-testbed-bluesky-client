@@ -43,6 +43,11 @@ const outDir = (() => {
 
 const { code } = bundle({
     filename: entryPoint,
+    visitor: {
+        Url(url) {
+            // adjust external references for the new script
+        },
+    }
 });
 
 await fs.promises.writeFile(path.join(outDir, path.basename(entryPoint)), code);

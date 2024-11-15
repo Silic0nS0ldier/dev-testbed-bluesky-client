@@ -1,4 +1,8 @@
+@import "./base-styles/reset.css";
+@import "./fonts/mod.css";
+
 body {
     background-color: black;
     color: white;
+    font-family: "Inter", sans-serif;
 }

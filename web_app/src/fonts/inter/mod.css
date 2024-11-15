@@ -1,0 +1,17 @@
+
+/*
+Inter-Italic-VariableFont_opsz,wght
+Inter-VariableFont_opsz,wght
+*/
+@font-face {
+    font-family: "Inter";
+    font-style: normal;
+    font-optical-sizing: auto;
+    src: url("./inter.ttf") format("truetype");
+}
+@font-face {
+    font-family: "Inter";
+    font-style: italic;
+    font-optical-sizing: auto;
+    src: url("./inter-italic.ttf") format("truetype");
+}
