@@ -1,5 +1,7 @@
-import type { Agent } from "vendor/@atproto/api";
+import type { Agent, AppBskyFeedDefs } from "vendor/@atproto/api";
 import { errAsync, fromPromise, okAsync, type ResultAsync } from "vendor/neverthrow";
+
+export type FeedViewPost = AppBskyFeedDefs.FeedViewPost
 
 // TODO Add per-feed mutex to keep order correct
 
@@ -17,7 +19,7 @@ export type FeedDID = string & { __FeedDID: unknown };
 export type FeedChunk = {
     currentCursor?: FeedCursor,
     nextCursor?: FeedCursor,
-    feed: unknown[],
+    feed: FeedViewPost[],
 };
 
 const feedsStore = new Map<FeedDID, FeedChunk[]>();
@@ -31,8 +33,9 @@ function getFeedChunks(feedDid: FeedDID): FeedChunk[] {
 /**
  * Get data for the specified feed, pulling the first chunk stored locally (cache) otherwise fresh
  * data.
+ * Wraps `app.bsky.feed.getFeed`.
  */
-export function getFeed(feedDid: FeedDID, agent: Agent): ResultAsync<FeedChunk, Error> {
+export function getFeed(feedDid: FeedDID, agent: Agent, abortSignal?: AbortSignal): ResultAsync<FeedChunk, Error> {
     const feedChunks = getFeedChunks(feedDid);
 
     // Try cache
@@ -48,7 +51,7 @@ export function getFeed(feedDid: FeedDID, agent: Agent): ResultAsync<FeedChunk, 
         agent.app.bsky.feed.getFeed({
             feed: feedDid,
             limit: 30,
-        }),
+        }, { signal: abortSignal }),
         (e) => new Error('Lookup failed.', { cause: e }),
     )
     .map((r) => {
